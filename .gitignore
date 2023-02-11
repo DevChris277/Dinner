@@ -1,5 +1,6 @@
 # Prerequisites
 *.d
+**/bin
 
 # Object files
 *.o
@@ -24,6 +25,7 @@
 
 # Shared objects (inc. Windows DLLs)
 *.dll
+*.pdh
 *.so
 *.so.*
 *.dylib
@@ -50,3 +52,4 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
