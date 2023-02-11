@@ -15,7 +15,7 @@ public class jwtTokenGenerator : IJwtTokenGenerator
     private readonly IDateTimeProvider _dateTimeProvider;
     private readonly JwtSettings _jwtSettings;
 
-    public jwtTokenGenerator(IDateTimeProvider dateTimeProvider, IOptions<JwtSettings >jwtOptions)
+    public jwtTokenGenerator(IDateTimeProvider dateTimeProvider, IOptions<JwtSettings> jwtOptions)
     {
         _dateTimeProvider = dateTimeProvider;
         _jwtSettings = jwtOptions.Value;
@@ -23,19 +23,25 @@ public class jwtTokenGenerator : IJwtTokenGenerator
 
     public string GenerateToken(User user)
     {
+        // Constructs a SigningCredentials object
+        // and stores the data in "signingCredentials" 
         var signingCredentials = new SigningCredentials(
             new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Secret)),
             SecurityAlgorithms.HmacSha256
         );
-        
+
+        // Creates an array of Claims objects
+        // based on user information
         var claims = new[]
-        {
+         {
             new Claim(JwtRegisteredClaimNames.Sub, $"{user.Id}"),
             new Claim(JwtRegisteredClaimNames.GivenName, user.FirstName),
             new Claim(JwtRegisteredClaimNames.FamilyName, user.LastName),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 
+        // Constructs a JwtSecurityToken with
+        // the given settings
         var securityToken = new JwtSecurityToken(
             issuer: _jwtSettings.Issuer,
             audience: _jwtSettings.Audience,
@@ -44,6 +50,8 @@ public class jwtTokenGenerator : IJwtTokenGenerator
             signingCredentials: signingCredentials
         );
 
+        // Returns a JSON Web token
         return new JwtSecurityTokenHandler().WriteToken(securityToken);
+
     }
 }
