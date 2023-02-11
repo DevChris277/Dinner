@@ -1,17 +1,20 @@
-using BuberDinner.Api.Middleware;
+using BuberDinner.Api.Errors;
 using BuberDinner.Application;
 using BuberDinner.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 {
     builder.Services.AddApplication();
     builder.Services.AddInfrastructure(builder.Configuration);
     builder.Services.AddControllers();
+
+    builder.Services.AddSingleton<ProblemDetailsFactory, CustomProblemDetailsFactory>();
 }
 
 var app = builder.Build();
 {
-    app.UseMiddleware<ErrorHandlingMiddleware>();
+    app.UseExceptionHandler("/error");
     app.UseHttpsRedirection();
     app.MapControllers();
     app.Run();
